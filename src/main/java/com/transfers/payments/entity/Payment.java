@@ -26,6 +26,28 @@ public class Payment {
     @Column(name = "date")
     private String date;
 
+    @Column(name = "card_number")
+    private long cardNumber;
+
+    @Column(name = "card_destination_number")
+    private long cardDestinationNumber;
+
+    public long getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(long cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public long getCardDestinationNumber() {
+        return cardDestinationNumber;
+    }
+
+    public void setCardDestinationNumber(long cardDestinationNumber) {
+        this.cardDestinationNumber = cardDestinationNumber;
+    }
+
     public int getId() {
         return id;
     }
