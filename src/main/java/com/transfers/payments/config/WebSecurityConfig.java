@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/", "/login", "/logout", "/userInfo", "/registration").permitAll()
         // /userInfo page requires login as ROLE_USER or ROLE_ADMIN.
         // If no login, it will redirect to /login page.
-        .antMatchers("/userInfo", "/cards", "/refill", "/transfer", "/createCard").hasAuthority("USER").antMatchers("/admin").hasAuthority("ADMIN").anyRequest().authenticated()
+        .antMatchers("/userInfo", "/cards", "/refill", "/transfer", "/createCard", "/income", "/payments").hasAuthority("USER").antMatchers("/activity", "/requests").hasAuthority("ADMIN").anyRequest().authenticated()
 
         // For ADMIN only.
 //        .antMatchers("/admin").hasAuthority("ADMIN").anyRequest().authenticated()
