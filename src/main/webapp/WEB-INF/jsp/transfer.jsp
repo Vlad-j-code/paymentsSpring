@@ -3,12 +3,6 @@
 <head>
     <title>Transfer</title>
     <jsp:include page="head.jsp" />
-    <style>
-        .success{
-            color: #00ff33;
-            text-align: center;
-        }
-    </style>
 </head>
 <body class="background-gradient">
 <header>
@@ -31,6 +25,9 @@
 </div>
 <div class="success" id="message">
     ${message}
+</div>
+<div class="warning" id="warning">
+    ${warning}
 </div>
 </body>
 </html>

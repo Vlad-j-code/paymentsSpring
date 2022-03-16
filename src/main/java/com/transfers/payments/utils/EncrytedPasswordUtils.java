@@ -3,6 +3,7 @@ package com.transfers.payments.utils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EncrytedPasswordUtils {
@@ -14,10 +15,10 @@ public class EncrytedPasswordUtils {
     }
 
     public static void main(String[] args) {
-        Date now = new Date();
-        DateFormat time = DateFormat.getDateInstance(DateFormat.DATE_FIELD);
-        DateFormat dfm = DateFormat.getTimeInstance();
-        System.out.println(time.format(now) + " " + dfm.format(now));
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String date = simpleDateFormat.format(new Date());
+        System.out.println(date);
     }
 
 }

@@ -6,6 +6,8 @@ import com.transfers.payments.repository.RoleRepository;
 import com.transfers.payments.repository.UserRepository;
 import com.transfers.payments.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,13 +34,17 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByLogin(login);
     }
 
-    @Override
     public void blockUnblockUserByLogin(String login) {
         User user = userRepository.findByLogin(login);
         if (user.getActive() == 1) {
             user.setActive(0);
         } else user.setActive(1);
         userRepository.save(user);
+    }
+
+    @Override
+    public Page<User> listUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override

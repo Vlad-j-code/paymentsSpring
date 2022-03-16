@@ -4,12 +4,6 @@
 <head>
     <title>Create card</title>
     <jsp:include page="head.jsp"/>
-    <style>
-        .success{
-            color: #00ff33;
-            text-align: center;
-        }
-    </style>
 </head>
 <body class="background-gradient">
 <header>

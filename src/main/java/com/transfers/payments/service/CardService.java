@@ -24,7 +24,15 @@ public interface CardService {
 
     void replenishBalance(int value, long cardNumber);
 
-    void withdraw(int value, long cardNumber);
+    void sendPayment(int value, long cardNumberFrom, long cardNumberTo);
 
-    void sendPayment(int value, Card from, Card to);
+    void blockUnblockCardById(int cardId);
+
+    List<Card> findCardsByRequest(int request);
+
+    void acceptRequest(int cardId);
+
+    void rejectRequest(int cardId);
+
+    void userUnblockRequest(int cardId);
 }

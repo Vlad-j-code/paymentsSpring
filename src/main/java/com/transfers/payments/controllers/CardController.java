@@ -33,8 +33,27 @@ public class CardController {
             String login = ((UserDetails) principal).getUsername();
             User user = userService.findUserByLogin(login);
             List<Card> cards = cardService.findCardByUserId(user.getUserId());
+            modelAndView.addObject("card", new Card());
             modelAndView.addObject("cards", cards);
         }
+        modelAndView.setViewName("userCards");
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/cards", params = "activity")
+    public ModelAndView userBlockCard(@ModelAttribute("Id") Card card) {
+        ModelAndView modelAndView = new ModelAndView();
+        cardService.blockUnblockCardById(card.getId());
+        modelAndView.addObject("message", "Card blocked");
+        modelAndView.setViewName("userCards");
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/cards", params = "unblock")
+    public ModelAndView userRequestUnblockCard(@ModelAttribute("Id") Card card) {
+        ModelAndView modelAndView = new ModelAndView();
+        cardService.userUnblockRequest(card.getId());
+        modelAndView.addObject("message", "Request has been sent");
         modelAndView.setViewName("userCards");
         return modelAndView;
     }
@@ -49,10 +68,20 @@ public class CardController {
     @PostMapping("/refill")
     public ModelAndView refill(int value, long numberCard) {
         ModelAndView modelAndView = new ModelAndView();
-        cardService.replenishBalance(value, numberCard);
-        modelAndView.addObject("message", "Balance replenishment completed successfully");
+        Card card = cardService.findCardByNumber(numberCard);
+        if (card == null) {
+            modelAndView.addObject("warning", "Card does not exist");
+        } else if (card.getActive() == 0) {
+            modelAndView.addObject("warning", "Card was blocked!");
+        } else if (value <= 0) {
+            modelAndView.addObject("warning", "Sum cannot be negative or equal to zero");
+        } else {
+            cardService.replenishBalance(value, numberCard);
+            modelAndView.addObject("message", "Balance replenishment completed successfully");
+        }
         modelAndView.setViewName("refill");
         return modelAndView;
+
     }
 
     @GetMapping("/transfer")
@@ -69,8 +98,20 @@ public class CardController {
         Card from = cardService.findCardByNumber(numberCardFrom);
         Card to = cardService.findCardByNumber(numberCardTo);
 
-        cardService.sendPayment(value, from, to);
-        modelAndView.addObject("message", "Money transfer completed successfully");
+        if (from == null || to == null) {
+            modelAndView.addObject("warning", "Card does not exist");
+        } else if (from.getActive() == 0) {
+            modelAndView.addObject("warning", "Your card was blocked!");
+        } else if (to.getActive() == 0) {
+            modelAndView.addObject("warning", "Destination card was blocked!");
+        } else if (value <= 0) {
+            modelAndView.addObject("warning", "Sum cannot be negative or equal to zero");
+        } else if (from.getMoney() < value) {
+            modelAndView.addObject("warning", "Sum higher then money");
+        } else {
+            cardService.sendPayment(value, from.getNumber(), to.getNumber());
+            modelAndView.addObject("message", "Money transfer completed successfully");
+        }
         modelAndView.setViewName("transfer");
         return modelAndView;
     }
@@ -100,13 +141,4 @@ public class CardController {
         return "createCard";
     }
 
-//    private void userDataCards(Model model) {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        if (principal instanceof UserDetails) {
-//            String login = ((UserDetails) principal).getUsername();
-//            User user = userService.findUserByLogin(login);
-//            List<Card> cards = cardService.findCardByUserId(user.getUserId());
-//            model.addAttribute("cards", cards);
-//        }
-//    }
 }

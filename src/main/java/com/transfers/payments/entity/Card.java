@@ -23,6 +23,28 @@ public class Card {
     @Column(name = "money")
     private int money;
 
+    @Column(name = "active")
+    private int active;
+
+    @Column(name = "request")
+    private int request;
+
+    public int getRequest() {
+        return request;
+    }
+
+    public void setRequest(int request) {
+        this.request = request;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
     public int getId() {
         return id;
     }

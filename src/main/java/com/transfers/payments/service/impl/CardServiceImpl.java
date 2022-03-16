@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
-import java.util.Collections;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -74,36 +73,74 @@ public class CardServiceImpl implements CardService {
         currentCard.setMoney(currentCard.getMoney() + value);
         Payment payment = new Payment();
         payment.setCardDestinationId(currentCard.getId());
+        payment.setCardDestinationNumber(currentCard.getNumber());
         payment.setMoney(value);
         payment.setBalance(currentCard.getMoney());
-        Date now = new Date();
-        DateFormat date = DateFormat.getDateInstance(DateFormat.DATE_FIELD);
-        DateFormat time = DateFormat.getTimeInstance();
-        payment.setDate(date.format(now) + " " + time.format(now));
+        String date = getDate();
+        payment.setDate(date);
         cardRepository.save(currentCard);
         paymentRepository.save(payment);
     }
 
-    @Override
-    public void withdraw(int value, long cardNumber) {
-        Card currentCard = cardRepository.findByNumber(cardNumber);
-        currentCard.setMoney(currentCard.getMoney() - value);
-        cardRepository.save(currentCard);
+    private String getDate() {
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(new Date());
     }
 
     @Override
-    public void sendPayment(int value, Card from, Card to) {
-        withdraw(value, from.getNumber());
-        replenishBalance(value, to.getNumber());
+    public void sendPayment(int value, long cardNumberFrom, long cardNumberTo) {
+        Card from = cardRepository.findByNumber(cardNumberFrom);
+        Card to = cardRepository.findByNumber(cardNumberTo);
+        from.setMoney(from.getMoney() - value);
+        to.setMoney(to.getMoney() + value);
+        Payment payment = new Payment();
+        payment.setCardId(from.getId());
+        payment.setCardDestinationId(to.getId());
+        payment.setCardNumber(from.getNumber());
+        payment.setCardDestinationNumber(to.getNumber());
+        payment.setMoney(value);
+        payment.setBalance(from.getMoney());
+        String date = getDate();
+        payment.setDate(date);
+        cardRepository.save(from);
+        cardRepository.save(to);
+        paymentRepository.save(payment);
     }
 
-//    @Override
-//    public void sendPayment(int value, long cardNumberFrom, long cardNumberTo) {
-//        Card from = cardRepository.findByNumber(cardNumberFrom);
-//        from.setMoney(from.getMoney() - value);
-//        cardRepository.save(from);
-//        Card to = cardRepository.findByNumber(cardNumberTo);
-//        to.setMoney(from.getMoney() + value);
-//        cardRepository.save(to);
-//    }
+    @Override
+    public void blockUnblockCardById(int cardId) {
+        Card card = cardRepository.findById(cardId);
+        if (card.getActive() == 1) {
+            card.setActive(0);
+        } else card.setActive(1);
+        cardRepository.save(card);
+    }
+
+    @Override
+    public List<Card> findCardsByRequest(int request) {
+        return cardRepository.findByRequest(request);
+    }
+
+    @Override
+    public void acceptRequest(int cardId) {
+        Card card = cardRepository.findById(cardId);
+        card.setActive(1);
+        card.setRequest(0);
+        cardRepository.save(card);
+    }
+
+    @Override
+    public void rejectRequest(int cardId) {
+        Card card = cardRepository.findById(cardId);
+        card.setRequest(0);
+        cardRepository.save(card);
+    }
+
+    @Override
+    public void userUnblockRequest(int cardId) {
+        Card card = cardRepository.findById(cardId);
+        card.setRequest(1);
+        cardRepository.save(card);
+    }
 }
