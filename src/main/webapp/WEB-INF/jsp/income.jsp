@@ -5,28 +5,62 @@
 <head>
     <title>Income</title>
     <jsp:include page="head.jsp"/>
+    <style>
+        .dropbtn {
+            background-color: Transparent;
+            color: white;
+            text-shadow:3px 3px 2px black, 0 0 40px yellow, 0 0 10px darkblue;
+            padding: 9px;
+            font-size: 16px;
+            border: none;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {background-color: #ddd;}
+        .dropdown:hover .dropdown-content {display: block;}
+    </style>
 </head>
-<body class="background-gradient">
+<body style="background: linear-gradient(to bottom left, #a12636, #431c83)">
 <header>
     <jsp:include page="header.jsp"/>
 </header>
 <c:choose>
-    <c:when test="${payments.totalPages > 0}">
+    <c:when test="${totalPages > 0}">
         <table id="table" class="table table-striped table-hover table-dark">
             <thead class="thead-light">
             <tr>
                 <th>#</th>
                 <th>Card number</th>
                 <th>Sender</th>
-                <th>Number payment</th>
+                <th><a href="/income/${currentPage}?sortField=id&sortDir=${reverseSortDir}">
+                    Number payment</a>
+                </th>
                 <th>Money</th>
                 <th>Balance</th>
-                <th>Date</th>
+                <th><a href="/income/${currentPage}?sortField=date&sortDir=${reverseSortDir}">
+                    Date</a>
+                </th>
             </tr>
             </thead>
             <tbody>
             <c:set var="k" value="0"/>
-            <c:forEach items="${payments.content}" var="payment">
+            <c:forEach items="${listPayments}" var="payment">
                 <c:set var="k" value="${k+1}"/>
                 <tr>
                     <th scope="row"><c:out value="${k}"/></th>
@@ -49,25 +83,21 @@
     </c:otherwise>
 </c:choose>
 <div style="float: right">
-    <c:if test="${payments.totalPages > 0}">
+    <c:if test="${totalPages > 0}">
         <nav aria-label="Page navigation example" style="margin:auto;">
             <ul class="pagination">
-                <c:set var="prev" value="0"/>
-                <c:if test="${param.page > 0}">
-                    <c:set var="prev" value="${param.page -1}"/>
+                <c:if test="${totalPages > 0}">
+                    <li class='page-item <c:if test="${currentPage <= 1}">disabled</c:if>'>
+                        <a class="page-link" href="/income/${currentPage - 1}?sortField=${sortField}&sortDir=${sortDir}">Prev</a></li>
                 </c:if>
-                <c:if test="${payments.totalPages > 0}">
-                    <li class='page-item <c:if test="${empty param.page || param.page eq 0}">disabled</c:if>'>
-                        <a class="page-link" href="/income?page=${prev}&size=${maxTraySize}">Prev</a></li>
-                </c:if>
-                <c:forEach var="i" begin="0" end="${payments.totalPages -1}">
-                    <li class='page-item <c:if test="${param.page eq i || (empty param.page && i eq 0)}">active</c:if>'>
-                        <a class="page-link" href="/income?page=${i}&size=${maxTraySize}">${i+1}</a>
+                <c:forEach var="i" begin="0" end="${totalPages - 1}">
+                    <li class='page-item <c:if test="${currentPage eq i+1}">active</c:if>'>
+                        <a class="page-link" href="/income/${i+1}?sortField=${sortField}&sortDir=${sortDir}">${i+1}</a>
                     </li>
                 </c:forEach>
-                <c:if test="${payments.totalPages > 0}">
-                    <li class='page-item <c:if test="${payments.totalPages <= (param.page + 1)}">disabled</c:if>'>
-                        <a class="page-link" href="/income?page=${param.page + 1}&size=${maxTraySize}">Next</a>
+                <c:if test="${totalPages > 0}">
+                    <li class='page-item <c:if test="${currentPage >= totalPages}">disabled</c:if>'>
+                        <a class="page-link" href="/income/${currentPage + 1}?sortField=${sortField}&sortDir=${sortDir}">Next</a>
                     </li>
                 </c:if>
             </ul>

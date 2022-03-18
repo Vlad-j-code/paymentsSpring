@@ -16,12 +16,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.List;
 
 @Controller
 public class PaymentsController {
@@ -32,40 +36,71 @@ public class PaymentsController {
     @Autowired
     private UserService userService;
 
-
-    @GetMapping(value = "/income")
-    public ModelAndView showIncome(@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-                                   @RequestParam(value = "size", defaultValue = "5", required = false) Integer size) {
-        ModelAndView modelAndView = new ModelAndView();
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            String login = ((UserDetails) principal).getUsername();
-            User user = userService.findUserByLogin(login);
-            Page<Payment> payments = paymentService.listIncomeByUserId(user.getUserId(), PageRequest.of(page, size, Sort.by("id")));
-            modelAndView.addObject("payments", payments);
-        }
-        modelAndView.addObject("maxTraySize", size);
-        modelAndView.addObject("currentPage", page);
-        modelAndView.setViewName("income");
-        return modelAndView;
+    @GetMapping("/income")
+    public String showIncome(Model model) {
+        return findPaginatedIncome(1, "id", "desc", model);
     }
 
-    @GetMapping(value = "/payments")
-    public ModelAndView showPayments(@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-                                     @RequestParam(value = "size", defaultValue = "5", required = false) Integer size) {
-        ModelAndView modelAndView = new ModelAndView();
+    @GetMapping("/income/{pageNo}")
+    public String findPaginatedIncome(@PathVariable(value = "pageNo") int pageNo,
+                                @RequestParam("sortField") String sortField,
+                                @RequestParam("sortDir") String sortDir,
+                                Model model) {
+        int pageSize = 5;
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             String login = ((UserDetails) principal).getUsername();
             User user = userService.findUserByLogin(login);
-            Page<Payment> payments = paymentService.listPaymentByUserId(user.getUserId(), PageRequest.of(page, size, Sort.by("id")));
-            modelAndView.addObject("payment", new Payment());
-            modelAndView.addObject("payments", payments);
+            Page<Payment> page = paymentService.findIncomePaginated(user.getUserId(), pageNo, pageSize, sortField, sortDir);
+            List<Payment> listPayments = page.getContent();
+
+            model.addAttribute("currentPage", pageNo);
+            model.addAttribute("totalPages", page.getTotalPages());
+            model.addAttribute("totalItems", page.getTotalElements());
+
+            model.addAttribute("sortField", sortField);
+            model.addAttribute("sortDir", sortDir);
+            model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+            model.addAttribute("listPayments", listPayments);
         }
-        modelAndView.addObject("maxTraySize", size);
-        modelAndView.addObject("currentPage", page);
-        modelAndView.setViewName("payments");
-        return modelAndView;
+
+        return "income";
+    }
+
+    @GetMapping("/payments")
+    public String showPayments(Model model) {
+        return findPaginatedPayments(1, "id", "desc", model);
+    }
+
+    @GetMapping("/payments/{pageNo}")
+    public String findPaginatedPayments(@PathVariable(value = "pageNo") int pageNo,
+                                      @RequestParam("sortField") String sortField,
+                                      @RequestParam("sortDir") String sortDir,
+                                      Model model) {
+        int pageSize = 5;
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String login = ((UserDetails) principal).getUsername();
+            User user = userService.findUserByLogin(login);
+            Page<Payment> page = paymentService.findPaymentsPaginated(user.getUserId(), pageNo, pageSize, sortField, sortDir);
+            List<Payment> listPayments = page.getContent();
+
+            model.addAttribute("currentPage", pageNo);
+            model.addAttribute("totalPages", page.getTotalPages());
+            model.addAttribute("totalItems", page.getTotalElements());
+
+            model.addAttribute("sortField", sortField);
+            model.addAttribute("sortDir", sortDir);
+            model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+            model.addAttribute("payment", new Payment());
+            model.addAttribute("listPayments", listPayments);
+        }
+
+        return "payments";
     }
 
     @GetMapping(value = "/payments",

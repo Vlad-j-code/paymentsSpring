@@ -19,5 +19,11 @@ public interface PaymentService {
 
     Page<Payment> listIncomeByUserId(int userId, Pageable pageable);
 
-    Page<Payment> listPaymentByUserId(int userId, Pageable pageable);
+    Page<Payment> listPaymentByUserIdDesc(int userId, Pageable pageable);
+
+    Page<Payment> listPaymentByUserIdAsc(int userId, Pageable pageable);
+
+    Page<Payment> findIncomePaginated(int userId, int pageNo, int pageSize, String sortField, String sortDirection);
+
+    Page<Payment> findPaymentsPaginated(int userId, int pageNo, int pageSize, String sortField, String sortDirection);
 }

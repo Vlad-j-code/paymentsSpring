@@ -8,7 +8,9 @@ import com.transfers.payments.repository.PaymentRepository;
 import com.transfers.payments.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,11 +82,46 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Page<Payment> listIncomeByUserId(int userId, Pageable pageable) {
-        return paymentRepository.pageIncByUserId(userId, pageable);
+        return paymentRepository.pageIncByUserIdDescDate(userId, pageable);
     }
 
     @Override
-    public Page<Payment> listPaymentByUserId(int userId, Pageable pageable) {
-        return paymentRepository.pagePayByUserId(userId, pageable);
+    public Page<Payment> listPaymentByUserIdDesc(int userId, Pageable pageable) {
+        return paymentRepository.pagePayByUserIdDescId(userId, pageable);
+    }
+
+    @Override
+    public Page<Payment> listPaymentByUserIdAsc(int userId, Pageable pageable) {
+        return paymentRepository.pagePayByUserIdAscId(userId, pageable);
+    }
+
+    @Override
+    public Page<Payment> findIncomePaginated(int userId, int pageNo, int pageSize, String sortField, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+        if (sortField.equals("id") && sortDirection.equals("asc")) {
+            return paymentRepository.pageIncByUserIdAscId(userId, pageable);
+        } else if (sortField.equals("id") && sortDirection.equals("desc")) {
+            return paymentRepository.pageIncByUserIdDescId(userId, pageable);
+        } else if (sortField.equals("date") && sortDirection.equals("asc")) {
+            return paymentRepository.pageIncByUserIdAscDate(userId, pageable);
+        } else {
+            return paymentRepository.pageIncByUserIdDescDate(userId, pageable);
+        }
+    }
+
+    @Override
+    public Page<Payment> findPaymentsPaginated(int userId, int pageNo, int pageSize, String sortField, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+        if (sortField.equals("id") && sortDirection.equals("asc")) {
+            return paymentRepository.pagePayByUserIdAscId(userId, pageable);
+        } else if (sortField.equals("id") && sortDirection.equals("desc")) {
+            return paymentRepository.pagePayByUserIdDescId(userId, pageable);
+        } else if (sortField.equals("balance") && sortDirection.equals("asc")) {
+            return paymentRepository.pagePayByUserIdAscBalance(userId, pageable);
+        } else {
+            return paymentRepository.pagePayByUserIdDescBalance(userId, pageable);
+        }
     }
 }
