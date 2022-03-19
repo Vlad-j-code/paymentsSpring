@@ -36,10 +36,6 @@
                 <c:if test="${pageContext.request.userPrincipal.name != 'admin'}">
                     <li class="nav-item active">
                         <a class="nav-link" style="text-shadow:3px 3px 2px black, 0 0 40px yellow, 0 0 10px darkblue;"
-                           href="/userInfo">User Info</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" style="text-shadow:3px 3px 2px black, 0 0 40px yellow, 0 0 10px darkblue;"
                            href="/cards">Cards</a>
                     </li>
                     <li class="nav-item active">
@@ -61,7 +57,7 @@
                 </c:if>
                 <li class="nav-item active">
                     <a class="nav-link" style="text-shadow:3px 3px 2px black, 0 0 40px yellow, 0 0 10px darkblue;"
-                       href="/logout">Logout</a>
+                       href="/logout">${pageContext.request.userPrincipal.name} <i>(Logout)</i></a>
                 </li>
             </c:if>
         </ul>
