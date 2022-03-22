@@ -1,9 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
-    <title>Income</title>
+    <title><spring:message code="jsp.header.income" text="default"/></title>
     <jsp:include page="head.jsp"/>
     <style>
         .dropbtn {
@@ -46,15 +47,15 @@
             <thead class="thead-light">
             <tr>
                 <th>#</th>
-                <th>Card number</th>
-                <th>Sender</th>
+                <th><spring:message code="jsp.card.number" text="default"/></th>
+                <th><spring:message code="jsp.sender" text="default"/></th>
                 <th><a href="/income/${currentPage}?sortField=id&sortDir=${reverseSortDir}">
-                    Number payment</a>
+                    <spring:message code="jsp.number.payments" text="default"/></a>
                 </th>
-                <th>Money</th>
-                <th>Balance</th>
+                <th><spring:message code="jsp.money" text="default"/></th>
+                <th><spring:message code="jsp.balance" text="default"/></th>
                 <th><a href="/income/${currentPage}?sortField=date&sortDir=${reverseSortDir}">
-                    Date</a>
+                    <spring:message code="jsp.date" text="default"/></a>
                 </th>
             </tr>
             </thead>
@@ -67,7 +68,7 @@
                     <td>${payment.cardDestinationNumber}</td>
                     <td><c:if test="${payment.cardId != null && payment.cardId != 0}">
                         ${payment.cardNumber}</c:if>
-                        <c:if test="${payment.cardId == null || payment.cardId == 0}">Refill</c:if>
+                        <c:if test="${payment.cardId == null || payment.cardId == 0}"><spring:message code="jsp.refill" text="default"/></c:if>
                     </td>
                     <td>${payment.id}</td>
                     <td>${payment.money}</td>

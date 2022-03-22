@@ -1,8 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
-    <title>Create card</title>
+    <title><spring:message code="jsp.creating.card" text="default"/></title>
     <jsp:include page="head.jsp"/>
 </head>
 <body class="background-gradient">
@@ -12,9 +13,9 @@
 <div class="login-page">
     <form:form method="post" action="${pageContext.request.contextPath}/createCard"
                modelAttribute="card">
-        <h1>Create card</h1>
+        <h1><spring:message code="jsp.create.card" text="default"/></h1>
         <div class="form-group">
-            <label class="text-white" for="name">Name new card:</label>
+            <label class="text-white" for="name"><spring:message code="jsp.name.newCard" text="default"/>:</label>
             <div class="cols-sm-10">
                 <div class="input-group-prepend">
                     <form:input type="name" class="form-control" path="name" id="name"
@@ -24,7 +25,7 @@
         </div>
         <div class="form-group ">
             <button type="submit" value="submit" class="btn btn-success shadow-lg ">
-                Submit
+                <spring:message code="jsp.accept" text="default"/>
             </button>
         </div>
     </form:form>

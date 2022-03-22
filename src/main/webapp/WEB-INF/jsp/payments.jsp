@@ -1,9 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Payments</title>
+    <title><spring:message code="jsp.header.payments" text="default"/></title>
     <jsp:include page="head.jsp"/>
     <style>
         .dropbtn {
@@ -46,19 +47,19 @@
             <thead class="thead-light">
                 <tr>
                     <th>#</th>
-                    <th>Card number</th>
-                    <th>Recipient</th>
+                    <th><spring:message code="jsp.card.number" text="default"/></th>
+                    <th><spring:message code="jsp.recipient" text="default"/></th>
                     <th>
                         <a href="/payments/${currentPage}?sortField=id&sortDir=${reverseSortDir}">
-                            Payments</a>
+                            <spring:message code="jsp.number.payments" text="default"/></a>
                     </th>
-                    <th>Date</th>
-                    <th>Money</th>
+                    <th><spring:message code="jsp.date" text="default"/></th>
+                    <th><spring:message code="jsp.money" text="default"/></th>
                     <th>
                         <a href="/payments/${currentPage}?sortField=balance&sortDir=${reverseSortDir}">
-                            Balance after payment</a>
+                            <spring:message code="jsp.balance.after.payment" text="default"/></a>
                     </th>
-                    <th>Download report</th>
+                    <th><spring:message code="jsp.action" text="default"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -77,7 +78,7 @@
                                 <form:form method="get" action="/payments" modelAttribute="payment">
                                     <form:input type="hidden" path="id" value="${payment.id}"/>
                                     <form:button type="submit" name="download"
-                                                 class="btn btn-info shadow-lg ">Get Pdf</form:button>
+                                                 class="btn btn-info shadow-lg "><spring:message code="jsp.get.pdf" text="default"/></form:button>
                                 </form:form>
                             </td>
                         </tr>

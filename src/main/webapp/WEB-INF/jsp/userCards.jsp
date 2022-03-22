@@ -1,9 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Cards</title>
+    <title><spring:message code="jsp.cards" text="default"/></title>
     <jsp:include page="head.jsp"/>
 </head>
 <body class="background-gradient">
@@ -25,15 +26,15 @@
                 <h5 class="card-header text-uppercase">
                         ${card.name}</h5>
                 <div class="card-body">
-                    <h6 class="card-title">Card number: ${card.number}</h6>
-                    <p class="card-text">Balance: ${card.money} UAH</p>
+                    <h6 class="card-title"><spring:message code="jsp.card.number" text="default"/>: ${card.number}</h6>
+                    <p class="card-text"><spring:message code="jsp.balance" text="default"/>: ${card.money} UAH</p>
                 </div>
                 <div class="card-footer">
                     <form:form method="post" action="/cards" modelAttribute="card">
                         <form:input type="hidden" path="id" value="${card.id}"/>
                         <c:if test="${card.getActive() == 1}">
                             <form:button type="submit" name="activity"
-                                         class="btn btn-danger shadow-lg ">Block</form:button>
+                                         class="btn btn-danger shadow-lg "><spring:message code="jsp.block" text="default"/></form:button>
                         </c:if>
                     </form:form>
                     <c:if test="${card.getRequest() == 0}">
@@ -41,12 +42,12 @@
                             <form:input type="hidden" path="id" value="${card.id}"/>
                             <c:if test="${card.getActive() == 0}">
                                 <form:button type="submit" name="unblock"
-                                             class="btn btn-success shadow-lg ">Unblock request</form:button>
+                                             class="btn btn-success shadow-lg "><spring:message code="jsp.unblock.request" text="default"/></form:button>
                             </c:if>
                         </form:form>
                     </c:if>
                     <c:if test="${card.getRequest() == 1}">
-                        Under consideration
+                        <spring:message code="jsp.consideration" text="default"/>
                     </c:if>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <title>Admin page</title>
@@ -13,20 +14,17 @@
     <div class="container">
         <div class="page-header">
             <h2>&nbsp;</h2>
-            <h1 style="text-align: center">Users activity</h1>
-
-            <p style="text-align: center" class="lead">Here you can check user activity and user cards</p>
+            <h1 style="text-align: center"><spring:message code="jsp.header.users" text="default"/></h1>
         </div>
-
         <c:choose>
         <c:when test="${users.totalPages > 0}">
         <table id="table" class="table table-striped table-hover table-dark">
             <thead class="thead-light">
             <tr>
-                <th>Users</th>
-                <th>Activity</th>
-                <th>Block/Unblock</th>
-                <th>Check cards</th>
+                <th><spring:message code="jsp.username" text="default"/></th>
+                <th><spring:message code="jsp.activity" text="default"/></th>
+                <th><spring:message code="jsp.action" text="default"/></th>
+                <th><spring:message code="jsp.check" text="default"/></th>
             </tr>
             </thead>
             <tbody>
@@ -35,19 +33,19 @@
                     <tr>
                         <td>${user.login}</td>
                         <td>
-                            <c:if test="${user.getActive() == 1}">Active</c:if>
-                            <c:if test="${user.getActive() == 0}">Blocked</c:if>
+                            <c:if test="${user.getActive() == 1}"><spring:message code="jsp.activity.active" text="default"/></c:if>
+                            <c:if test="${user.getActive() == 0}"><spring:message code="jsp.activity.blocked" text="default"/></c:if>
                         </td>
                         <td>
                             <form:form method="post" action="/activity" modelAttribute="user">
                                 <form:input type="hidden" path="login" value="${user.login}"/>
                                 <c:if test="${user.getActive() == 1}">
                                     <form:button type="submit" name="block"
-                                                 class="btn btn-danger shadow-lg ">Block</form:button>
+                                                 class="btn btn-danger shadow-lg "><spring:message code="jsp.block" text="default"/></form:button>
                                 </c:if>
                                 <c:if test="${user.getActive() == 0}">
                                     <form:button type="submit" name="block"
-                                                 class="btn btn-success shadow-lg ">Unblock</form:button>
+                                                 class="btn btn-success shadow-lg "><spring:message code="jsp.unblock" text="default"/></form:button>
                                 </c:if>
                             </form:form>
                         </td>
@@ -55,7 +53,7 @@
                             <form:form method="post" action="/activity" modelAttribute="user">
                                 <form:input type="hidden" path="userId" value="${user.userId}"/>
                                 <form:button type="submit" name="cards"
-                                             class="btn btn-info shadow-lg ">Cards</form:button>
+                                             class="btn btn-info shadow-lg "><spring:message code="jsp.cards" text="default"/></form:button>
                             </form:form>
                         </td>
                     </tr>
