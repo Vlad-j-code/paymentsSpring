@@ -35,4 +35,6 @@ public interface CardService {
     void rejectRequest(int cardId);
 
     void userUnblockRequest(int cardId);
+
+    List<Card> sortingCards(int userId, String sortField, String sortDirection);
 }

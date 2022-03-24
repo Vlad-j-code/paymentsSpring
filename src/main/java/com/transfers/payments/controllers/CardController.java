@@ -25,16 +25,44 @@ public class CardController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/cards")
-    public ModelAndView userCards() {
-        ModelAndView modelAndView = new ModelAndView();
+//    @GetMapping(value = "/cards")
+//    public ModelAndView userCards() {
+//        ModelAndView modelAndView = new ModelAndView();
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        if (principal instanceof UserDetails) {
+//            String login = ((UserDetails) principal).getUsername();
+//            User user = userService.findUserByLogin(login);
+//            List<Card> cards = cardService.findCardByUserId(user.getUserId());
+//            modelAndView.addObject("card", new Card());
+//            modelAndView.addObject("cards", cards);
+//        }
+//        modelAndView.setViewName("userCards");
+//        return modelAndView;
+//    }
+
+    @GetMapping("/cards")
+    public ModelAndView showCards(ModelAndView modelAndView) {
+        return sortCards(1,"number", "asc", modelAndView);
+    }
+
+    @GetMapping(value = "/cards/{pageNo}")
+    public ModelAndView sortCards(@PathVariable(value = "pageNo") int pageNo,
+                                  @RequestParam("sortField") String sortField,
+                                  @RequestParam("sortDir") String sortDir,
+                                  ModelAndView modelAndView) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             String login = ((UserDetails) principal).getUsername();
             User user = userService.findUserByLogin(login);
-            List<Card> cards = cardService.findCardByUserId(user.getUserId());
+            List<Card> cards = cardService.sortingCards(user.getUserId(), sortField, sortDir);
             modelAndView.addObject("card", new Card());
             modelAndView.addObject("cards", cards);
+
+            modelAndView.addObject("currentPage", pageNo);
+
+            modelAndView.addObject("sortField", sortField);
+            modelAndView.addObject("sortDir", sortDir);
+            modelAndView.addObject("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         }
         modelAndView.setViewName("userCards");
         return modelAndView;

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -142,5 +144,31 @@ public class CardServiceImpl implements CardService {
         Card card = cardRepository.findById(cardId);
         card.setRequest(1);
         cardRepository.save(card);
+    }
+
+    @Override
+    public List<Card> sortingCards(int userId, String sortField, String sortDirection) {
+        List<Card> cards = cardRepository.findByUserId(userId);
+        switch (sortField) {
+            case "name":
+                cards.sort(Comparator.comparing(Card::getName));
+                if ("desc".equals(sortDirection)) {
+                    Collections.reverse(cards);
+                }
+                break;
+            case "number":
+                cards.sort(Comparator.comparingLong(Card::getNumber));
+                if ("desc".equals(sortDirection)) {
+                    Collections.reverse(cards);
+                }
+                break;
+            case "money":
+                cards.sort(Comparator.comparingInt(Card::getMoney));
+                if ("desc".equals(sortDirection)) {
+                    Collections.reverse(cards);
+                }
+                break;
+        }
+        return cards;
     }
 }
