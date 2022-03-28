@@ -31,6 +31,7 @@ public class CardServiceImpl implements CardService {
         card.setUserId(userId);
         card.setName(card.getName());
         card.setNumber(CardNumber.createCardNumber());
+        card.setActive(1);
         cardRepository.save(card);
     }
 
@@ -41,12 +42,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void deleteCard(int cardId) {
-
-    }
-
-    @Override
-    public Card findCard(int cardId) {
-        return null;
+        cardRepository.deleteById(cardId);
     }
 
     @Override

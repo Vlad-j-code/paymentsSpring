@@ -12,8 +12,6 @@ public interface CardService {
 
     void deleteCard(int cardId);
 
-    Card findCard(int cardId);
-
     List<Card> getAllCards();
 
     List<Card> findCardByUserId(int userId);
