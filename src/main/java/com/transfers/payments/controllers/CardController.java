@@ -15,6 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Controller
 public class CardController {
@@ -27,7 +30,7 @@ public class CardController {
 
     @GetMapping("/cards")
     public ModelAndView showCards(ModelAndView modelAndView) {
-        return sortCards(1,"number", "asc", modelAndView);
+        return sortCards(1, "number", "asc", modelAndView);
     }
 
     @GetMapping(value = "/cards/{pageNo}")
@@ -82,13 +85,16 @@ public class CardController {
     public ModelAndView refill(int value, long numberCard) {
         ModelAndView modelAndView = new ModelAndView();
         Card card = cardService.findCardByNumber(numberCard);
+
         if (card == null) {
             modelAndView.addObject("warning", "Card does not exist");
-        } else if (card.getActive() == 0) {
-            modelAndView.addObject("warning", "Card was blocked!");
-        } else if (value <= 0) {
-            modelAndView.addObject("warning", "Sum cannot be negative or equal to zero");
-        } else {
+        }
+        Optional.ofNullable(card).filter(f -> card.getActive() == 0)
+                .ifPresent(mv -> modelAndView.addObject("warning", "Card was blocked!"));
+        Optional.of(modelAndView).filter(v -> value <= 0).ifPresent(mv ->
+                mv.addObject("warning", "Sum cannot be negative or equal to zero"));
+
+        if (card != null && value > 0 && card.getActive() == 1) {
             cardService.replenishBalance(value, numberCard);
             modelAndView.addObject("message", "Balance replenishment completed successfully");
         }
@@ -113,15 +119,18 @@ public class CardController {
 
         if (from == null || to == null) {
             modelAndView.addObject("warning", "Card does not exist");
-        } else if (from.getActive() == 0) {
-            modelAndView.addObject("warning", "Your card was blocked!");
-        } else if (to.getActive() == 0) {
-            modelAndView.addObject("warning", "Destination card was blocked!");
-        } else if (value <= 0) {
-            modelAndView.addObject("warning", "Sum cannot be negative or equal to zero");
-        } else if (from.getMoney() < value) {
-            modelAndView.addObject("warning", "Sum higher then money");
-        } else {
+        }
+        Optional.ofNullable(from).filter(f -> from.getActive() == 0)
+                .ifPresent(mv -> modelAndView.addObject("warning", "Your card was blocked!"));
+        Optional.ofNullable(to).filter(t -> to.getActive() == 0).ifPresent(mv ->
+                modelAndView.addObject("warning", "Destination card was blocked!"));
+        Optional.of(modelAndView).filter(v -> value <= 0).ifPresent(mv ->
+                mv.addObject("warning", "Sum cannot be negative or equal to zero"));
+        Optional.ofNullable(from).filter(f -> from.getMoney() < value)
+                .ifPresent(mv -> modelAndView.addObject("warning", "Sum higher then money"));
+
+        if (from != null && to != null && value > 0 && from.getMoney() > value
+                && from.getActive() == 1 && to.getActive() == 1) {
             cardService.sendPayment(value, from.getNumber(), to.getNumber());
             modelAndView.addObject("message", "Money transfer completed successfully");
         }
