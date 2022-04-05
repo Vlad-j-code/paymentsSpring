@@ -11,13 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
-@Transactional
 public class CardServiceImpl implements CardService {
 
     @Autowired
@@ -27,6 +23,7 @@ public class CardServiceImpl implements CardService {
     private PaymentRepository paymentRepository;
 
     @Override
+    @Transactional
     public void addCard(int userId, Card card) {
         card.setUserId(userId);
         card.setName(card.getName());
@@ -66,6 +63,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public void replenishBalance(int value, long cardNumber) {
         Card currentCard = cardRepository.findByNumber(cardNumber);
         currentCard.setMoney(currentCard.getMoney() + value);
@@ -87,6 +85,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public void sendPayment(int value, long cardNumberFrom, long cardNumberTo) {
         Card from = cardRepository.findByNumber(cardNumberFrom);
         Card to = cardRepository.findByNumber(cardNumberTo);
@@ -107,6 +106,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public void blockUnblockCardById(int cardId) {
         Card card = cardRepository.findById(cardId);
         if (card.getActive() == 1) {
@@ -121,6 +121,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public void acceptRequest(int cardId) {
         Card card = cardRepository.findById(cardId);
         card.setActive(1);
@@ -129,6 +130,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public void rejectRequest(int cardId) {
         Card card = cardRepository.findById(cardId);
         card.setRequest(0);
@@ -136,6 +138,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public void userUnblockRequest(int cardId) {
         Card card = cardRepository.findById(cardId);
         card.setRequest(1);
