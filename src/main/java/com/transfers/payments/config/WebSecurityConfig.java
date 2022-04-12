@@ -2,7 +2,6 @@ package com.transfers.payments.config;
 
 import javax.sql.DataSource;
 
-import com.transfers.payments.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

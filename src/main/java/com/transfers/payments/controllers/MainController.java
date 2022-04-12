@@ -1,11 +1,8 @@
 package com.transfers.payments.controllers;
 
 import java.security.Principal;
-import java.util.List;
 
-import com.transfers.payments.service.UserService;
 import com.transfers.payments.utils.WebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;

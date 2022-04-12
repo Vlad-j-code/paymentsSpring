@@ -1,6 +1,5 @@
 package com.transfers.payments.service;
 
-import com.itextpdf.text.DocumentException;
 import com.transfers.payments.entity.Payment;
 import com.transfers.payments.entity.User;
 import org.junit.Assert;
@@ -11,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)

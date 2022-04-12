@@ -2,7 +2,6 @@ package com.transfers.payments.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
