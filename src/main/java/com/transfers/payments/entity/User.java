@@ -4,8 +4,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.Set;
-
 
 @Entity
 @Table(name="users")
@@ -28,9 +26,9 @@ public class User {
     @Column(name = "active")
     private int active;
 
-    @ManyToMany
+    @ManyToOne
     @JoinTable(name="user_role", joinColumns=@JoinColumn(name="user_id"), inverseJoinColumns=@JoinColumn(name="role_id"))
-    private Set<Role> roles;
+    private Role roles;
 
     public int getUserId() {
         return userId;
@@ -64,11 +62,11 @@ public class User {
         this.active = active;
     }
 
-    public Set<Role> getRoles() {
+    public Role getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(Role roles) {
         this.roles = roles;
     }
 }
